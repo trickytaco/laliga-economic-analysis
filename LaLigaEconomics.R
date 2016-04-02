@@ -93,7 +93,8 @@ for (i in 2:11) {
 #Plot the first row's data as a line
 plot(factor(names(TransExpAvgDF)[2:11]), TransExpAvgDF[2,2:11], type="l",
      ylim = c(0,allMax), xaxt = "n", xlab = "Season",
-     ylab = "Transfer Expenditure Average")
+     ylab = "Transfer Expenditure Average",
+     main = "Transfer Expenditure Average by Season")
 #Add some information to the bottom axis
 axis(1, 1:10, names(TransExpAvgDF)[2:11])
 
@@ -301,12 +302,21 @@ for (i in 2:11) {
     print(summary(pts_MktValFit))
     
     #Plot the data points and trend line
+    if (summary(pts_MktValFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(pts_MktValFit)$coefficients[1], 4), " ",
+                     signStr, " ",
+                     round(summary(pts_MktValFit)$coefficients[2], 4),
+                     "x", sep="")
     plot(MarketValueDFVector, PointsDFVector, type="p",
          xlim=c(0, marketMax), ylim=c(0, 114),
-         main=paste("Market Value vs. Points\n",
-                    names(PointsDF)[i], ", R-Squared = ",
-                    round(summary(pts_MktValFit)$adj.r.squared, 5),
-                    sep=""),
+         main=paste("Market Value vs. Points, ",
+                    names(PointsDF)[i], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(pts_MktValFit)$adj.r.squared, 5), sep=""),
          xlab = "Market Value", ylab = "Points", pch=20)
     abline(pts_MktValFit)
     
@@ -343,12 +353,21 @@ for (i in 2:11) {
     print(summary(pts_MktValFit))
     
     #Plot the data points and trend line
+    if (summary(pts_MktValFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(pts_MktValFit)$coefficients[1], 4), " ",
+                        signStr, " ",
+                        round(summary(pts_MktValFit)$coefficients[2], 4),
+                        "x", sep="")
     plot(MarketValueDFVector, PointsDFVector, type="p",
          xlim=c(0, marketMaxNORMDBAR), ylim=c(0, 114),
-         main=paste("Market Value vs. Points (No RMD/BAR)\n",
-                    names(PointsDF)[i], ", R-Squared = ",
-                    round(summary(pts_MktValFit)$adj.r.squared, 5),
-                    sep=""),
+         main=paste("Market Value vs. Points (No RMD/BAR), ",
+                    names(PointsDF)[i], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(pts_MktValFit)$adj.r.squared, 5), sep=""),
          xlab = "Market Value", ylab = "Points", pch=20)
     abline(pts_MktValFit)
     
@@ -384,12 +403,21 @@ for (i in 2:11) {
     print(summary(pts_TExpAvgFit))
     
     #Plot the data points and trend line
+    if (summary(pts_TExpAvgFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(pts_TExpAvgFit)$coefficients[1], 4), " ",
+                        signStr, " ",
+                        round(summary(pts_TExpAvgFit)$coefficients[2], 4),
+                        "x", sep="")
     plot(TransExpAvgDFVector, PointsDFVector, type="p",
          xlim=c(0, transExpMax), ylim=c(0, 114),
-         main=paste("Transfer Expense Average vs. Points\n",
-                    names(PointsDF)[i], ", R-Squared = ",
-                    round(summary(pts_TExpAvgFit)$adj.r.squared, 5),
-                    sep=""),
+         main=paste("Transfer Expense Average vs. Points, ",
+                    names(PointsDF)[i], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(pts_TExpAvgFit)$adj.r.squared, 5), sep=""),
          xlab = "Transfer Expense Average", ylab = "Points", pch=20)
     abline(pts_TExpAvgFit)
     
@@ -426,12 +454,21 @@ for (i in 2:11) {
     print(summary(pts_TExpAvgFit))
     
     #Plot the data points and trend line
+    if (summary(pts_TExpAvgFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(pts_TExpAvgFit)$coefficients[1], 4), " ",
+                        signStr, " ",
+                        round(summary(pts_TExpAvgFit)$coefficients[2], 4),
+                        "x", sep="")
     plot(TransExpAvgDFVector, PointsDFVector, type="p",
          xlim=c(0, transExpMaxNORMDBAR), ylim=c(0, 114),
-         main=paste("Transfer Expense Average vs. Points (No RMD/BAR)\n",
-                    names(PointsDF)[i], ", R-Squared = ",
-                    round(summary(pts_TExpAvgFit)$adj.r.squared, 5),
-                    sep=""),
+         main=paste("Transfer Expense Average vs. Points (No RMD/BAR), ",
+                    names(PointsDF)[i], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(pts_TExpAvgFit)$adj.r.squared, 5), sep=""),
          xlab = "Transfer Expense Average", ylab = "Points", pch=20)
     abline(pts_TExpAvgFit)
     
