@@ -5,6 +5,16 @@ library(xlsx)
 #Set the working directory
 setwd("D:\\Statistics\\LaLiga\\laliga-economic-analysis")
 
+#Read in the standings for each season from 2005-06 to 2014-15
+standingsList <- list()
+sheetNames <- c("2005-06", "2006-07", "2007-08", "2008-09", "2009-10",
+                "2010-11", "2011-12", "2012-13", "2013-14", "2014-15")
+
+for (i in 1:10) {
+    standingsList[[i]] <- read.xlsx("La Liga Standings.xlsx",
+                                    sheetName = sheetNames[i])
+}
+
 #Read in the Points sheet and set the column names
 PointsDF <- read.xlsx("La Liga economics.xlsx", sheetName = "Points")
 names(PointsDF) <- c("Team_ID", "Team", "2005-06", "2006-07", "2007-08",
@@ -12,7 +22,6 @@ names(PointsDF) <- c("Team_ID", "Team", "2005-06", "2006-07", "2007-08",
                      "2013-14", "2014-15")
 #Remove some non-data rows
 PointsDF <- PointsDF[-1:-3,-1]
-#ggplot(data = PointsDF, aes(x=names(PointsDF), y=PointsDF[2,2:11]))
 
 #Calculate the maximum value of the entire data table for plotting purposes
 allMax <- 0
@@ -317,7 +326,7 @@ for (i in 2:11) {
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_MktValFit)$adj.r.squared, 5), sep=""),
-         xlab = "Market Value", ylab = "Points", pch=20)
+         xlab = "Market Value", ylab = "Points", pch=19)
     abline(pts_MktValFit)
     
     #Copy the device to a png device
@@ -368,7 +377,7 @@ for (i in 2:11) {
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_MktValFit)$adj.r.squared, 5), sep=""),
-         xlab = "Market Value", ylab = "Points", pch=20)
+         xlab = "Market Value", ylab = "Points", pch=19)
     abline(pts_MktValFit)
     
     #Copy the device to a png device
@@ -381,14 +390,14 @@ for (i in 2:11) {
 }
 
 #Calculate the maximum transfer expense average value for plotting purposes
-transExpMax <- 0
+transExpAvgMax <- 0
 for (i in 2:11) {
-    if (max(TransExpAvgDF[,i][complete.cases(TransExpAvgDF[,i])]) > transExpMax) {
-        transExpMax <- max(TransExpAvgDF[,i][complete.cases(TransExpAvgDF[,i])])
+    if (max(TransExpAvgDF[,i][complete.cases(TransExpAvgDF[,i])]) > transExpAvgMax) {
+        transExpAvgMax <- max(TransExpAvgDF[,i][complete.cases(TransExpAvgDF[,i])])
     }
 }
 
-#Create a linear regression model of transfer expense average vs. market value
+#Create a linear regression model of points earned vs. transfer expense average
 #(all clubs.)
 for (i in 2:11) {
     #Convert PointsDF and TransExpAvgDF into one-dimensional vectors so that
@@ -413,12 +422,12 @@ for (i in 2:11) {
                         round(summary(pts_TExpAvgFit)$coefficients[2], 4),
                         "x", sep="")
     plot(TransExpAvgDFVector, PointsDFVector, type="p",
-         xlim=c(0, transExpMax), ylim=c(0, 114),
+         xlim=c(0, transExpAvgMax), ylim=c(0, 114),
          main=paste("Transfer Expense Average vs. Points, ",
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_TExpAvgFit)$adj.r.squared, 5), sep=""),
-         xlab = "Transfer Expense Average", ylab = "Points", pch=20)
+         xlab = "Transfer Expense Average", ylab = "Points", pch=19)
     abline(pts_TExpAvgFit)
     
     #Copy the device to a png device
@@ -431,15 +440,15 @@ for (i in 2:11) {
 }
 
 
-#Calculate the maximum Market value for plotting purposes (no RMD or BAR)
-transExpMaxNORMDBAR <- 0
+#Calculate the maximum transfer expense average value for plotting purposes (no RMD or BAR)
+transExpAvgMaxNORMDBAR <- 0
 for (i in 2:11) {
-    if (max(TransExpAvgDF[-1:-2,i][complete.cases(TransExpAvgDF[-1:-2,i])]) > transExpMaxNORMDBAR) {
-        transExpMaxNORMDBAR <- max(TransExpAvgDF[-1:-2,i][complete.cases(TransExpAvgDF[-1:-2,i])])
+    if (max(TransExpAvgDF[-1:-2,i][complete.cases(TransExpAvgDF[-1:-2,i])]) > transExpAvgMaxNORMDBAR) {
+        transExpAvgMaxNORMDBAR <- max(TransExpAvgDF[-1:-2,i][complete.cases(TransExpAvgDF[-1:-2,i])])
     }
 }
 
-#Create a linear regression model of points earned vs. market value (no
+#Create a linear regression model of points earned vs. transfer expense average (no
 #RMD or BAR.)
 for (i in 2:11) {
     #Convert PointsDF and MarketValueDF into one-dimensional vectors so that
@@ -464,17 +473,167 @@ for (i in 2:11) {
                         round(summary(pts_TExpAvgFit)$coefficients[2], 4),
                         "x", sep="")
     plot(TransExpAvgDFVector, PointsDFVector, type="p",
-         xlim=c(0, transExpMaxNORMDBAR), ylim=c(0, 114),
+         xlim=c(0, transExpAvgMaxNORMDBAR), ylim=c(0, 114),
          main=paste("Transfer Expense Average vs. Points (No RMD/BAR), ",
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_TExpAvgFit)$adj.r.squared, 5), sep=""),
-         xlab = "Transfer Expense Average", ylab = "Points", pch=20)
+         xlab = "Transfer Expense Average", ylab = "Points", pch=19)
     abline(pts_TExpAvgFit)
     
     #Copy the device to a png device
     dev.copy(png, file = paste(".\\plots\\points_vs_transfer_expense_average_",
                                names(PointsDF)[i], "_noRMDBAR.png", sep=""),
+             width = 1280, height = 720, units = "px")
+    
+    #Close the device to save the file
+    dev.off()
+}
+
+#COMMENTED OUT BECAUSE THIS ISN'T REALLY A VALID CALCULATION
+
+# #Calculate the maximum goal differential value for plotting purposes
+# goalDiffMin <- 0
+# goalDiffMax <- 0
+# for (i in 1:10) {
+#     if (max(standingsList[[i]]$GD) > goalDiffMax) {
+#         goalDiffMax <- max(standingsList[[i]]$GD)
+#     }
+#     if (min(standingsList[[i]]$GD) < goalDiffMin) {
+#         goalDiffMin <- min(standingsList[[i]]$GD)
+#     }
+# }
+
+# #Create a linear regression model of goal differential vs. market value
+# #(all clubs.)
+# for (i in 1:10) {
+#     #Extract each season in standingsList and perform the calculations
+#     goalDiffVector <- standingsList[[i]]$GD
+#     TransExpAvgDFVector <- c(as.matrix(TransExpAvgDF[,i+1]))[match(standingsList[[i]]$Team, PointsDF$Team)]
+
+#     #Create the linear model and print the details
+#     GD_TExpAvgFit <- lm(goalDiffVector ~ TransExpAvgDFVector)
+#     print(names(PointsDF)[i+1])
+#     print(summary(GD_TExpAvgFit))
+#     
+#     #Plot the data points and trend line
+#     if (summary(GD_TExpAvgFit)$coefficients[2] >= 0) {
+#         signStr <- "+"
+#     } else {
+#         signStr <- "-"
+#     }
+#     regFormula <- paste(round(summary(GD_TExpAvgFit)$coefficients[1], 4), " ",
+#                         signStr, " ",
+#                         round(summary(GD_TExpAvgFit)$coefficients[2], 4),
+#                         "x", sep="")
+#     plot(TransExpAvgDFVector, goalDiffVector, type="p",
+#          xlim=c(0, transExpAvgMax), ylim=c(goalDiffMin, goalDiffMax),
+#          main=paste("Transfer Expense Average vs. Goal Differential, ",
+#                     names(PointsDF)[i+1], "\n", regFormula, 
+#                     ", R-Squared = ",
+#                     round(summary(GD_TExpAvgFit)$adj.r.squared, 5), sep=""),
+#          xlab = "Transfer Expense Average", ylab = "Goal Differential", pch=19)
+#     abline(GD_TExpAvgFit)
+#     
+#     #Copy the device to a png device
+#     dev.copy(png, file = paste(".\\plots\\goal_differential_vs_transfer_expense_average_",
+#                                names(PointsDF)[i+1], ".png", sep=""),
+#              width = 1280, height = 720, units = "px")
+#     
+#     #Close the device to save the file
+#     dev.off()
+# }
+
+#Calculate the maximum goals for value for plotting purposes
+goalsForMax <- 0
+for (i in 1:10) {
+    if (max(standingsList[[i]]$GD) > goalsForMax) {
+        goalsForMax <- max(standingsList[[i]]$GD)
+    }
+}
+
+#Create a linear regression model of goals for vs. market value
+#(all clubs.)
+for (i in 1:10) {
+    #Extract each season in standingsList and perform the calculations
+    goalsForVector <- standingsList[[i]]$OF
+    TransExpAvgDFVector <- c(as.matrix(TransExpAvgDF[,i+1]))[match(standingsList[[i]]$Team, PointsDF$Team)]
+    
+    #Create the linear model and print the details
+    GF_TExpAvgFit <- lm(goalsForVector ~ TransExpAvgDFVector)
+    print(names(PointsDF)[i+1])
+    print(summary(GF_TExpAvgFit))
+    
+    #Plot the data points and trend line
+    if (summary(GF_TExpAvgFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(GF_TExpAvgFit)$coefficients[1], 4), " ",
+                        signStr, " ",
+                        round(summary(GF_TExpAvgFit)$coefficients[2], 4),
+                        "x", sep="")
+    plot(TransExpAvgDFVector, goalsForVector, type="p",
+         xlim=c(0, transExpAvgMax), ylim=c(0, goalsForMax),
+         main=paste("Transfer Expense Average vs. Goals For, ",
+                    names(PointsDF)[i+1], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(GF_TExpAvgFit)$adj.r.squared, 5), sep=""),
+         xlab = "Transfer Expense Average", ylab = "Goals For", pch=19)
+    abline(GF_TExpAvgFit)
+    
+    #Copy the device to a png device
+    dev.copy(png, file = paste(".\\plots\\goals_for_vs_transfer_expense_average_",
+                               names(PointsDF)[i+1], ".png", sep=""),
+             width = 1280, height = 720, units = "px")
+    
+    #Close the device to save the file
+    dev.off()
+}
+
+#Calculate the maximum goals for value for plotting purposes (no RMD or BAR)
+goalsForMaxNORMDBAR <- 0
+for (i in 1:10) {
+    if (max(standingsList[[i]]$OF[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))]) > goalsForMaxNORMDBAR) {
+        goalsForMaxNORMDBAR <- max(standingsList[[i]]$OF[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))])
+    }
+}
+
+#Create a linear regression model of goals for vs. market value
+#(no RMD or BAR.)
+for (i in 1:10) {
+    #Extract each season in standingsList and perform the calculations
+    goalsForVector <- standingsList[[i]]$OF[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))]
+    TransExpAvgDFVector <- c(as.matrix(TransExpAvgDF[,i+1]))[match(standingsList[[i]]$Team[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))], PointsDF$Team)]
+    
+    #Create the linear model and print the details
+    GF_TExpAvgFit <- lm(goalsForVector ~ TransExpAvgDFVector)
+    print(names(PointsDF)[i+1])
+    print(summary(GF_TExpAvgFit))
+    
+    #Plot the data points and trend line
+    if (summary(GF_TExpAvgFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(GF_TExpAvgFit)$coefficients[1], 4), " ",
+                        signStr, " ",
+                        round(summary(GF_TExpAvgFit)$coefficients[2], 4),
+                        "x", sep="")
+    plot(TransExpAvgDFVector, goalsForVector, type="p",
+         xlim=c(0, transExpAvgMaxNORMDBAR), ylim=c(0, goalsForMaxNORMDBAR),
+         main=paste("Transfer Expense Average vs. Goals For (No RMD/BAR), ",
+                    names(PointsDF)[i+1], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(GF_TExpAvgFit)$adj.r.squared, 5), sep=""),
+         xlab = "Transfer Expense Average", ylab = "Goals For", pch=19)
+    abline(GF_TExpAvgFit)
+    
+    #Copy the device to a png device
+    dev.copy(png, file = paste(".\\plots\\goals_for_vs_transfer_expense_average_",
+                               names(PointsDF)[i+1], "_noRMDBAR.png", sep=""),
              width = 1280, height = 720, units = "px")
     
     #Close the device to save the file
