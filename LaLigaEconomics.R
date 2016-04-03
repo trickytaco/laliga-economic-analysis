@@ -44,7 +44,7 @@ for (i in 2:36) {
 }
 
 #Copy the device to a png device
-dev.copy(png, file = ".\\plots\\points.png", width = 1280, height = 720, units = "px")
+dev.copy(png, file = ".\\plots\\basic\\points.png", width = 1280, height = 720, units = "px")
 
 #Close the device to save the file
 dev.off()
@@ -78,7 +78,7 @@ for (i in 1:36) {
 }
 
 #Copy the device to a png device
-dev.copy(png, file = ".\\plots\\transfer_expense.png", width = 1280, height = 720, units = "px")
+dev.copy(png, file = ".\\plots\\basic\\transfer_expense.png", width = 1280, height = 720, units = "px")
 
 #Close the device to save the file
 dev.off()
@@ -113,7 +113,7 @@ for (i in 1:36) {
 }
 
 #Copy the device to a png device
-dev.copy(png, file = ".\\plots\\transfer_expense_average.png", width = 1280, height = 720, units = "px")
+dev.copy(png, file = ".\\plots\\basic\\transfer_expense_average.png", width = 1280, height = 720, units = "px")
 
 #Close the device to save the file
 dev.off()
@@ -153,7 +153,7 @@ for (i in 1:36) {
 }
 
 #Copy the device to a png device
-dev.copy(png, file = ".\\plots\\net_transfer_spend.png", width = 1280, height = 720, units = "px")
+dev.copy(png, file = ".\\plots\\basic\\net_transfer_spend.png", width = 1280, height = 720, units = "px")
 
 #Close the device to save the file
 dev.off()
@@ -193,7 +193,7 @@ for (i in 1:36) {
 }
 
 #Copy the device to a png device
-dev.copy(png, file = ".\\plots\\net_transfer_spend_average.png", width = 1280, height = 720, units = "px")
+dev.copy(png, file = ".\\plots\\basic\\net_transfer_spend_average.png", width = 1280, height = 720, units = "px")
 
 #Close the device to save the file
 dev.off()
@@ -227,7 +227,7 @@ for (i in 1:36) {
 }
 
 #Copy the device to a png device
-dev.copy(png, file = ".\\plots\\market_value.png", width = 1280, height = 720, units = "px")
+dev.copy(png, file = ".\\plots\\basic\\market_value.png", width = 1280, height = 720, units = "px")
 
 #Close the device to save the file
 dev.off()
@@ -330,7 +330,7 @@ for (i in 2:11) {
     abline(pts_MktValFit)
     
     #Copy the device to a png device
-    dev.copy(png, file = paste(".\\plots\\points_vs_market_value_",
+    dev.copy(png, file = paste(".\\plots\\pointsVS\\points_vs_market_value_",
                                names(PointsDF)[i], ".png", sep=""),
              width = 1280, height = 720, units = "px")
     
@@ -381,7 +381,7 @@ for (i in 2:11) {
     abline(pts_MktValFit)
     
     #Copy the device to a png device
-    dev.copy(png, file = paste(".\\plots\\points_vs_market_value_",
+    dev.copy(png, file = paste(".\\plots\\pointsVS\\points_vs_market_value_",
                                names(PointsDF)[i], "_noRMDBAR.png", sep=""),
              width = 1280, height = 720, units = "px")
     
@@ -431,7 +431,7 @@ for (i in 2:11) {
     abline(pts_TExpAvgFit)
     
     #Copy the device to a png device
-    dev.copy(png, file = paste(".\\plots\\points_vs_transfer_expense_average_",
+    dev.copy(png, file = paste(".\\plots\\pointsVS\\points_vs_transfer_expense_average_",
                                names(PointsDF)[i], ".png", sep=""),
              width = 1280, height = 720, units = "px")
     
@@ -482,7 +482,7 @@ for (i in 2:11) {
     abline(pts_TExpAvgFit)
     
     #Copy the device to a png device
-    dev.copy(png, file = paste(".\\plots\\points_vs_transfer_expense_average_",
+    dev.copy(png, file = paste(".\\plots\\pointsVS\\points_vs_transfer_expense_average_",
                                names(PointsDF)[i], "_noRMDBAR.png", sep=""),
              width = 1280, height = 720, units = "px")
     
@@ -584,7 +584,7 @@ for (i in 1:10) {
     abline(GF_TExpAvgFit)
     
     #Copy the device to a png device
-    dev.copy(png, file = paste(".\\plots\\goals_for_vs_transfer_expense_average_",
+    dev.copy(png, file = paste(".\\plots\\goalsForVS\\goals_for_vs_transfer_expense_average_",
                                names(PointsDF)[i+1], ".png", sep=""),
              width = 1280, height = 720, units = "px")
     
@@ -632,7 +632,7 @@ for (i in 1:10) {
     abline(GF_TExpAvgFit)
     
     #Copy the device to a png device
-    dev.copy(png, file = paste(".\\plots\\goals_for_vs_transfer_expense_average_",
+    dev.copy(png, file = paste(".\\plots\\goalsForVS\\goals_for_vs_transfer_expense_average_",
                                names(PointsDF)[i+1], "_noRMDBAR.png", sep=""),
              width = 1280, height = 720, units = "px")
     
