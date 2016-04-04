@@ -322,7 +322,7 @@ for (i in 2:11) {
                      "x", sep="")
     plot(MarketValueDFVector, PointsDFVector, type="p",
          xlim=c(0, marketMax), ylim=c(0, 114),
-         main=paste("Market Value vs. Points, ",
+         main=paste("Points vs. Market Value, ",
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_MktValFit)$adj.r.squared, 5), sep=""),
@@ -373,7 +373,7 @@ for (i in 2:11) {
                         "x", sep="")
     plot(MarketValueDFVector, PointsDFVector, type="p",
          xlim=c(0, marketMaxNORMDBAR), ylim=c(0, 114),
-         main=paste("Market Value vs. Points (No RMD/BAR), ",
+         main=paste("Points vs. Market Value (No RMD/BAR), ",
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_MktValFit)$adj.r.squared, 5), sep=""),
@@ -423,7 +423,7 @@ for (i in 2:11) {
                         "x", sep="")
     plot(TransExpAvgDFVector, PointsDFVector, type="p",
          xlim=c(0, transExpAvgMax), ylim=c(0, 114),
-         main=paste("Transfer Expense Average vs. Points, ",
+         main=paste("Points vs. Transfer Expense Average, ",
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_TExpAvgFit)$adj.r.squared, 5), sep=""),
@@ -474,7 +474,7 @@ for (i in 2:11) {
                         "x", sep="")
     plot(TransExpAvgDFVector, PointsDFVector, type="p",
          xlim=c(0, transExpAvgMaxNORMDBAR), ylim=c(0, 114),
-         main=paste("Transfer Expense Average vs. Points (No RMD/BAR), ",
+         main=paste("Points vs. Transfer Expense Average (No RMD/BAR), ",
                     names(PointsDF)[i], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(pts_TExpAvgFit)$adj.r.squared, 5), sep=""),
@@ -552,7 +552,7 @@ for (i in 1:10) {
     }
 }
 
-#Create a linear regression model of goals for vs. market value
+#Create a linear regression model of goals for vs. transfer expense average
 #(all clubs.)
 for (i in 1:10) {
     #Extract each season in standingsList and perform the calculations
@@ -576,7 +576,7 @@ for (i in 1:10) {
                         "x", sep="")
     plot(TransExpAvgDFVector, goalsForVector, type="p",
          xlim=c(0, transExpAvgMax), ylim=c(0, goalsForMax),
-         main=paste("Transfer Expense Average vs. Goals For, ",
+         main=paste("Goals For vs. Transfer Expense Average, ",
                     names(PointsDF)[i+1], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(GF_TExpAvgFit)$adj.r.squared, 5), sep=""),
@@ -600,7 +600,7 @@ for (i in 1:10) {
     }
 }
 
-#Create a linear regression model of goals for vs. market value
+#Create a linear regression model of goals for vs. transfer expense average
 #(no RMD or BAR.)
 for (i in 1:10) {
     #Extract each season in standingsList and perform the calculations
@@ -624,7 +624,7 @@ for (i in 1:10) {
                         "x", sep="")
     plot(TransExpAvgDFVector, goalsForVector, type="p",
          xlim=c(0, transExpAvgMaxNORMDBAR), ylim=c(0, goalsForMaxNORMDBAR),
-         main=paste("Transfer Expense Average vs. Goals For (No RMD/BAR), ",
+         main=paste("Goals For vs. Transfer Expense Average (No RMD/BAR), ",
                     names(PointsDF)[i+1], "\n", regFormula, 
                     ", R-Squared = ",
                     round(summary(GF_TExpAvgFit)$adj.r.squared, 5), sep=""),
@@ -633,6 +633,86 @@ for (i in 1:10) {
     
     #Copy the device to a png device
     dev.copy(png, file = paste(".\\plots\\goalsForVS\\goals_for_vs_transfer_expense_average_",
+                               names(PointsDF)[i+1], "_noRMDBAR.png", sep=""),
+             width = 1280, height = 720, units = "px")
+    
+    #Close the device to save the file
+    dev.off()
+}
+
+#Create a linear regression model of goals for vs. market value
+#(all clubs.)
+for (i in 1:10) {
+    #Extract each season in standingsList and perform the calculations
+    goalsForVector <- standingsList[[i]]$OF
+    MarketValueDFVector <- c(as.matrix(MarketValueDF[,i+1]))[match(standingsList[[i]]$Team, PointsDF$Team)]
+    
+    #Create the linear model and print the details
+    GF_MktValFit <- lm(goalsForVector ~ MarketValueDFVector)
+    print(names(PointsDF)[i+1])
+    print(summary(GF_MktValFit))
+    
+    #Plot the data points and trend line
+    if (summary(GF_MktValFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(GF_MktValFit)$coefficients[1], 4), " ",
+                        signStr, " ",
+                        round(summary(GF_MktValFit)$coefficients[2], 4),
+                        "x", sep="")
+    plot(MarketValueDFVector, goalsForVector, type="p",
+         xlim=c(0, marketMaxNORMDBAR), ylim=c(0, goalsForMaxNORMDBAR),
+         main=paste("Goals For vs. Market Value, ",
+                    names(PointsDF)[i+1], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(GF_MktValFit)$adj.r.squared, 5), sep=""),
+         xlab = "Market Value", ylab = "Goals For", pch=19)
+    abline(GF_MktValFit)
+    
+    #Copy the device to a png device
+    dev.copy(png, file = paste(".\\plots\\goalsForVS\\goals_for_vs_market_value_",
+                               names(PointsDF)[i+1], ".png", sep=""),
+             width = 1280, height = 720, units = "px")
+    
+    #Close the device to save the file
+    dev.off()
+}
+
+#Create a linear regression model of goals for vs. market value
+#(no RMD/BAR.)
+for (i in 1:10) {
+    #Extract each season in standingsList and perform the calculations
+    goalsForVector <- standingsList[[i]]$OF[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))]
+    MarketValueDFVector <- c(as.matrix(MarketValueDF[,i+1]))[match(standingsList[[i]]$Team[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))], PointsDF$Team)]
+    
+    #Create the linear model and print the details
+    GF_MktValFit <- lm(goalsForVector ~ MarketValueDFVector)
+    print(names(PointsDF)[i+1])
+    print(summary(GF_MktValFit))
+    
+    #Plot the data points and trend line
+    if (summary(GF_MktValFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+    } else {
+        signStr <- "-"
+    }
+    regFormula <- paste(round(summary(GF_MktValFit)$coefficients[1], 4), " ",
+                        signStr, " ",
+                        round(summary(GF_MktValFit)$coefficients[2], 4),
+                        "x", sep="")
+    plot(MarketValueDFVector, goalsForVector, type="p",
+         xlim=c(0, marketMax), ylim=c(0, goalsForMax),
+         main=paste("Goals For vs. Market Value (No RMD/BAR), ",
+                    names(PointsDF)[i+1], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(GF_MktValFit)$adj.r.squared, 5), sep=""),
+         xlab = "Market Value", ylab = "Goals For", pch=19)
+    abline(GF_MktValFit)
+    
+    #Copy the device to a png device
+    dev.copy(png, file = paste(".\\plots\\goalsForVS\\goals_for_vs_market_value_",
                                names(PointsDF)[i+1], "_noRMDBAR.png", sep=""),
              width = 1280, height = 720, units = "px")
     
