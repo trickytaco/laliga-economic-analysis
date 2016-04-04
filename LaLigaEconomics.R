@@ -663,7 +663,7 @@ for (i in 1:10) {
                         round(summary(GF_MktValFit)$coefficients[2], 4),
                         "x", sep="")
     plot(MarketValueDFVector, goalsForVector, type="p",
-         xlim=c(0, marketMaxNORMDBAR), ylim=c(0, goalsForMaxNORMDBAR),
+         xlim=c(0, marketMax), ylim=c(0, goalsForMax),
          main=paste("Goals For vs. Market Value, ",
                     names(PointsDF)[i+1], "\n", regFormula, 
                     ", R-Squared = ",
@@ -703,7 +703,7 @@ for (i in 1:10) {
                         round(summary(GF_MktValFit)$coefficients[2], 4),
                         "x", sep="")
     plot(MarketValueDFVector, goalsForVector, type="p",
-         xlim=c(0, marketMax), ylim=c(0, goalsForMax),
+         xlim=c(0, marketMaxNORMDBAR), ylim=c(0, goalsForMaxNORMDBAR),
          main=paste("Goals For vs. Market Value (No RMD/BAR), ",
                     names(PointsDF)[i+1], "\n", regFormula, 
                     ", R-Squared = ",
@@ -713,6 +713,102 @@ for (i in 1:10) {
     
     #Copy the device to a png device
     dev.copy(png, file = paste(".\\plots\\goalsForVS\\goals_for_vs_market_value_",
+                               names(PointsDF)[i+1], "_noRMDBAR.png", sep=""),
+             width = 1280, height = 720, units = "px")
+    
+    #Close the device to save the file
+    dev.off()
+}
+
+#Calculate the maximum goals against value for plotting purposes
+goalsAgainstMax <- 0
+for (i in 1:10) {
+    if (max(standingsList[[i]]$GD) > goalsAgainstMax) {
+        goalsAgainstMax <- max(standingsList[[i]]$GD)
+    }
+}
+
+#Create a linear regression model of goals against vs. market value
+#(all clubs.)
+for (i in 1:10) {
+    #Extract each season in standingsList and perform the calculations
+    goalsAgainstVector <- standingsList[[i]]$OA
+    MarketValueDFVector <- c(as.matrix(MarketValueDF[,i+1]))[match(standingsList[[i]]$Team, PointsDF$Team)]
+    
+    #Create the linear model and print the details
+    GA_MktValFit <- lm(goalsAgainstVector ~ MarketValueDFVector)
+    print(names(PointsDF)[i+1])
+    print(summary(GA_MktValFit))
+    
+    #Plot the data points and trend line
+    if (summary(GA_MktValFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+        xCoef <- round(summary(GA_MktValFit)$coefficients[2], 4)
+    } else {
+        signStr <- "-"
+        xCoef <- -1 * round(summary(GA_MktValFit)$coefficients[2], 4)
+    }
+    regFormula <- paste(round(summary(GA_MktValFit)$coefficients[1], 4), " ",
+                        signStr, " ", xCoef, "x", sep="")
+    plot(MarketValueDFVector, goalsAgainstVector, type="p",
+         xlim=c(0, marketMax), ylim=c(0, goalsAgainstMax),
+         main=paste("Goals Against vs. Market Value, ",
+                    names(PointsDF)[i+1], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(GA_MktValFit)$adj.r.squared, 5), sep=""),
+         xlab = "Market Value", ylab = "Goals For", pch=19)
+    abline(GA_MktValFit)
+    
+    #Copy the device to a png device
+    dev.copy(png, file = paste(".\\plots\\goalsAgainstVS\\goals_against_vs_market_value_",
+                               names(PointsDF)[i+1], ".png", sep=""),
+             width = 1280, height = 720, units = "px")
+    
+    #Close the device to save the file
+    dev.off()
+}
+
+#Calculate the maximum goals against value for plotting purposes (no RMD or BAR)
+goalsAgainstMaxNORMDBAR <- 0
+for (i in 1:10) {
+    if (max(standingsList[[i]]$OA[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))]) > goalsAgainstMaxNORMDBAR) {
+        goalsAgainstMaxNORMDBAR <- max(standingsList[[i]]$OA[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))])
+    }
+}
+
+#Create a linear regression model of goals against vs. market value
+#(no RMD/BAR.)
+for (i in 1:10) {
+    #Extract each season in standingsList and perform the calculations
+    goalsAgainstVector <- standingsList[[i]]$OA[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))]
+    MarketValueDFVector <- c(as.matrix(MarketValueDF[,i+1]))[match(standingsList[[i]]$Team[!(standingsList[[i]]$Team %in% c("Real Madrid", "Barcelona"))], PointsDF$Team)]
+    
+    #Create the linear model and print the details
+    GA_MktValFit <- lm(goalsAgainstVector ~ MarketValueDFVector)
+    print(names(PointsDF)[i+1])
+    print(summary(GA_MktValFit))
+    
+    #Plot the data points and trend line
+    if (summary(GA_MktValFit)$coefficients[2] >= 0) {
+        signStr <- "+"
+        xCoef <- round(summary(GA_MktValFit)$coefficients[2], 4)
+    } else {
+        signStr <- "-"
+        xCoef <- -1 * round(summary(GA_MktValFit)$coefficients[2], 4)
+    }
+    regFormula <- paste(round(summary(GA_MktValFit)$coefficients[1], 4), " ",
+                        signStr, " ", xCoef, "x", sep="")
+    plot(MarketValueDFVector, goalsAgainstVector, type="p",
+         xlim=c(0, marketMaxNORMDBAR), ylim=c(0, goalsAgainstMaxNORMDBAR),
+         main=paste("Goals Against vs. Market Value (no RMD/BAR), ",
+                    names(PointsDF)[i+1], "\n", regFormula, 
+                    ", R-Squared = ",
+                    round(summary(GA_MktValFit)$adj.r.squared, 5), sep=""),
+         xlab = "Market Value", ylab = "Goals For", pch=19)
+    abline(GA_MktValFit)
+    
+    #Copy the device to a png device
+    dev.copy(png, file = paste(".\\plots\\goalsAgainstVS\\goals_against_vs_market_value_",
                                names(PointsDF)[i+1], "_noRMDBAR.png", sep=""),
              width = 1280, height = 720, units = "px")
     
